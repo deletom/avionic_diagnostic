@@ -32,6 +32,9 @@
 #define RED 0xF800
 #define GREEN 0xFF00
 
+// Définition de la LED de base
+#define LED_BASE 56
+
 int main(void)
 {
 
@@ -84,7 +87,7 @@ int main(void)
     memset(map, 0, FILESIZE);
 
 	// 0x0 : Vert, le système est lancé
-	*(p) = GREEN;
+	*(p + LED_BASE) = GREEN;
 	
 	// Connexion à Redis
 	struct timeval timeout = { 1, 500000 }; // 1.5 seconds
@@ -95,11 +98,11 @@ int main(void)
         }
         
         // 0x1 : Rouge, pas de connexion Redis
-        *(p+1) = RED;
+        *(p + LED_BASE +1) = RED;
         exit(EXIT_FAILURE);
 	}
     // 0x1 : Vert, on est bon pour Redis
-	*(p+1) = GREEN;
+	*(p + LED_BASE +1) = GREEN;
 	
 
 	while (flag) {
@@ -109,10 +112,10 @@ int main(void)
 		
 		if (reply->type == REDIS_REPLY_STRING && strcmp(reply->str,"1") == 0){
 			// 0x3 : Vert, GPS actif
-			*(p+3) = GREEN;	
+			*(p + LED_BASE +3) = GREEN;	
 		} else {
 			// 0x3 : Rouge, GPS inactif
-			*(p+3) = RED;	
+			*(p + LED_BASE +3) = RED;	
 		}
 		freeReplyObject(reply);
 		
@@ -122,12 +125,12 @@ int main(void)
 			longNbrSecondeRedis = strtol(reply->str, &errorLong, 0);
 			longNbrSecondeCurrent = time(NULL);
 			if (longNbrSecondeCurrent - longNbrSecondeRedis > 1) {
-				*(p+4) = RED;	
+				*(p + LED_BASE +4) = RED;	
 			} else {
-				*(p+4) = GREEN;	
+				*(p + LED_BASE +4) = GREEN;	
 			}
 		} else {
-			*(p+4) = RED;	
+			*(p + LED_BASE +4) = RED;	
 		}
 		freeReplyObject(reply);
 		
@@ -137,27 +140,27 @@ int main(void)
 			longNbrSecondeRedis = strtol(reply->str, &errorLong, 0);
 			longNbrSecondeCurrent = time(NULL);
 			if (longNbrSecondeCurrent - longNbrSecondeRedis > 1) {
-				*(p+5) = RED;	
+				*(p + LED_BASE +5) = RED;	
 			} else {
-				*(p+5) = GREEN;	
+				*(p + LED_BASE +5) = GREEN;	
 			}
 		} else {
-			*(p+5) = RED;
+			*(p + LED_BASE +5) = RED;
 		}
 		freeReplyObject(reply);
 		
 	// Un vol est-il en cours ?
 		reply = redisCommand(c,"GET current_flight_inprogress");
 		if (reply->type == REDIS_REPLY_STRING && strcmp(reply->str,"1") == 0){
-			*(p+2) = GREEN;	
+			*(p + LED_BASE +2) = GREEN;	
 		} else {
-			*(p+2) = RED;
+			*(p + LED_BASE +2) = RED;
 		}
 		freeReplyObject(reply);
 		
 	// Pour l'instant, on quitte la boucle au bout d'un lapse de temps
 		usleep(250000);
-		if (i > 70) {
+		if (i > 80) {
 			flag = 0;
 		}
 		i++;
