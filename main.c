@@ -43,7 +43,6 @@ int main(void) {
     uint16_t *p;
     struct fb_fix_screeninfo fix_info;
     int flag = 1;
-    int i = 0;
     long longNbrSecondeRedis = 0;
     long longNbrSecondeCurrent = 0;
     char *errorLong;
@@ -104,6 +103,7 @@ int main(void) {
     *(p + LED_BASE + 1) = GREEN;
 
 
+    
     while (flag) {
 
         // Récupération du statut du GPS
@@ -152,18 +152,12 @@ int main(void) {
         reply = redisCommand(c, "GET current_flight_inprogress");
         if (reply->type == REDIS_REPLY_STRING && strcmp(reply->str, "1") == 0) {
             *(p + LED_BASE + 2) = GREEN;
+            flag = 1;
         } else {
             *(p + LED_BASE + 2) = RED;
-        }
-        freeReplyObject(reply);
-
-        // Pour l'instant, on quitte la boucle au bout d'un lapse de temps
-        usleep(250000);
-        if (i > 80) {
             flag = 0;
         }
-        i++;
-        /////
+        freeReplyObject(reply);
     }
 
     // On éteint la matrice le LED
