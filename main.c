@@ -31,6 +31,7 @@
 // Définition des couleurs
 #define RED 0xF800
 #define GREEN 0xFF00
+#define BLUE 0x001F
 
 // Définition de la LED de base
 #define LED_BASE 56
@@ -85,7 +86,7 @@ int main(void) {
     memset(map, 0, FILESIZE);
 
     // 0x0 : Vert, le système est lancé
-    *(p + LED_BASE) = GREEN;
+    *(p + LED_BASE) = BLUE;
 
     // Connexion à Redis
     struct timeval timeout = {1, 500000}; // 1.5 seconds
