@@ -1,11 +1,11 @@
 /*
  * Diagnostic du système
- * - statut Redis
- * - BDD
- * - GPS
- * - SenseHat
- *       gcc -Wall led_matrix.c -o led_matrix
- *
+ * 1. System : Bleu
+ * 2. Redis : Rouge/Vert
+ * 3. Vol en cours : Rouge/Vert
+ * 4. GPS : Rouge/Vert
+ * 5. GPS Time : Rouge/Vert
+ * 6. IMU Time : Rouge/Vert
  */
 
 #include <stdio.h>
@@ -39,11 +39,11 @@
 int main(void) {
 
     // Variables utilisées pour la matrice LED
-    int FrameBufferMatrix;
     uint16_t *map;
     uint16_t *p;
     struct fb_fix_screeninfo fix_info;
     int flag = 1;
+    int FrameBufferMatrix;
     long longNbrSecondeRedis = 0;
     long longNbrSecondeCurrent = 0;
     char *errorLong;
@@ -103,8 +103,6 @@ int main(void) {
     // 0x1 : Vert, on est bon pour Redis
     *(p + LED_BASE + 1) = GREEN;
 
-
-    
     while (flag) {
 
         // Récupération du statut du GPS
