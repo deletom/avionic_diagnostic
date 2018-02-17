@@ -1,5 +1,6 @@
-/*
- * Diagnostic du système
+/**
+ * Module de Diagnostic du système
+ * Auteur : Thomas DELECOURT
  * 1. System : Bleu
  * 2. Redis : Rouge/Vert
  * 3. Vol en cours : Rouge/Vert
